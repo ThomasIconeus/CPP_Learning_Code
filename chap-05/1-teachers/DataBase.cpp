@@ -74,6 +74,26 @@ int main()
 
             teachers.emplace_back(new Teacher { name });
         }
+        else if (command == "r")
+        {
+            std::string name;
+            std::cin >> name;
+
+            const auto teacher_it = std::find(teachers.begin(), teachers.end(), name);
+            if (teacher_it == teachers.end())
+            {
+                continue;
+            }
+
+            auto* teacher = *teacher_it;
+            for (auto* subject : subjects)
+            {
+                subject->remove_teacher(*teacher);
+            }
+
+            teachers.erase(teacher_it);
+            delete teacher;
+        }
         else if (command == "s")
         {
             std::string args;
@@ -81,7 +101,7 @@ int main()
 
             if (auto result = parse_subject_args(args))
             {
-                const auto curriculum_it = std::find(curriculums.begin(), curriculums.end(), result.curriculum); // some fcn is needed
+                const auto curriculum_it = std::find(curriculums.begin(), curriculums.end(), result.curriculum);
                 if (curriculum_it == curriculums.end())
                 {
                     continue;
@@ -92,7 +112,7 @@ int main()
 
                 for (const auto& teacher_name : result.teachers)
                 {
-                    const auto teacher_it = std::find(teachers.begin(), teachers.end(), teacher_name); // some fcn is needed
+                    const auto teacher_it = std::find(teachers.begin(), teachers.end(), teacher_name);
                     if (teacher_it == teachers.end())
                     {
                         continue;

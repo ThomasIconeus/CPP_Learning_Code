@@ -13,7 +13,7 @@ class Model
 public:
     using Container = std::unordered_map<std::string, std::unique_ptr<Model>>;
 
-    static void Create(Container& models)
+    static void Create(Container& models, Texture::Cache& cache)
     {
         std::cout << "Model name: ";
         std::cout.flush();
@@ -34,7 +34,7 @@ public:
         unsigned int count = 0u;
         std::cin >> count;
 
-        std::vector<std::unique_ptr<Texture>> textures;
+        std::vector<std::shared_ptr<Texture>> textures;
 
         while (count-- > 0u)
         {
@@ -44,7 +44,7 @@ public:
             std::string texture;
             std::cin >> texture;
 
-            textures.push_back(Texture::Load(texture));
+            textures.push_back(Texture::Load(cache, texture));
         }
 
         models.emplace_hint(it, name, std::make_unique<Model>(name, std::move(textures)));
@@ -64,7 +64,7 @@ public:
         }
     }
 
-    Model(std::string_view name, std::vector<std::unique_ptr<Texture>> textures)
+    Model(std::string_view name, std::vector<std::shared_ptr<Texture>> textures)
         : _name { name }
         , _textures { std::move(textures) }
     {
@@ -83,5 +83,5 @@ public:
 
 private:
     std::string _name;
-    std::vector<std::unique_ptr<Texture>> _textures;
+    std::vector<std::shared_ptr<Texture>> _textures;
 };
